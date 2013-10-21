@@ -1115,6 +1115,8 @@ module NewRelic
         rescue EOFError => e
           ::NewRelic::Agent.logger.warn("EOFError after #{Time.now - now}s when transmitting data to New Relic Service.")
           ::NewRelic::Agent.logger.debug(e)
+          ::NewRelic::Agent.logger.debug(e.message) if error.respond_to?(:message)
+          ::NewRelic::Agent.logger.debug(e.backtrace) if error.respond_to?(:backtrace)
         rescue => e
           retry_count ||= 0
           retry_count += 1

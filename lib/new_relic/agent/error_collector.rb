@@ -229,6 +229,12 @@ module NewRelic
         def over_queue_limit?(message)
           over_limit = (@errors.reject{|err| err.exception_class_constant < NewRelic::Agent::InternalAgentError}.length >= MAX_ERROR_QUEUE_LENGTH)
           ::NewRelic::Agent.logger.warn("The error reporting queue has reached #{MAX_ERROR_QUEUE_LENGTH}. The error detail for this and subsequent errors will not be transmitted to New Relic until the queued errors have been sent: #{message}") if over_limit
+          ::NewRelic::Agent.logger.debug("DEBUG of ErrorCollector#errors")
+          @errors.each do |error|
+            ::NewRelic::Agent.logger.debug(error.inspect)
+            ::NewRelic::Agent.logger.debug(error.message) if error.respond_to?(:message)
+            ::NewRelic::Agent.logger.debug(error.backtrace) if error.respond_to?(:backtrace)
+          end
           over_limit
         end
 
